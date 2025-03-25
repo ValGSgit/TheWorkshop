@@ -245,17 +245,22 @@ void	ft_exit(t_cmd *cmd)
 	exit_code = 0;
 	if (cmd->args[1])
 	{
-		if (!ft_isnumber(cmd->args[1]) && !cmd->args[2])
+		if ((!ft_isnumber(cmd->args[1]) && !cmd->args[2])
+		|| (ft_strcmp(cmd->args[1], "9223372036854775808") == 0
+		|| ft_strcmp(cmd->args[1], "-9223372036854775809") == 0))
 		{
+			write(2, "exit: ", 6);
+			write(2, cmd->args[1], ft_strlen(cmd->args[1]));
 			write(2, "numeric argument required\n", 27);
-			exit(2); // Exit with code 2 for invalid numeric argument
+			cmd->exit_status = 2;
+			exit(2);
 		}
 		exit_code = ft_atoi(cmd->args[1]);
 		if (cmd->args[2])
 		{
 			write(2, "exit: too many arguments\n", 26);
-			exit_code = 1; // Set exit code to 1
-			exit(exit_code);
+			exit_code = 1;
+			return ;
 		}
 	}
 	exit(exit_code % 256);
